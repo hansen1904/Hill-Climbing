@@ -7,15 +7,23 @@ import java.util.Random;
 public class SimpleHillClimbing {
 
 	private final List<Double> universe;
+	private final Problem p;
+	private ArrayList<Double> bestSolution;
 
-	public SimpleHillClimbing(final List<Double> universe) {
+	public SimpleHillClimbing(final List<Double> universe, Problem p) {
 		this.universe = universe;
+		this.p = p;
 	}
 
 	public double findOptima() {
-		// Select a random value as a starting point aka 'best solution'
-		double bestSolution = this.universe.get(this.getRandomIndex());
 		boolean shouldContinue;
+		
+		ArrayList<Double> localBestSolution = new ArrayList<>();
+		for(int dim = 0; dim < p.getDimensions(); dim++) {
+			localBestSolution.add(p.getMinValues().get(dim) + Math.random() * (p.getMaxValues().get(dim) - localBestSolution.getMinVal-ues().get(dim)));
+		}
+
+		
 		do {
 			// Select a random neighbour
 			double newSolution = this.universe.get(this.getRandomIndex());
@@ -32,12 +40,6 @@ public class SimpleHillClimbing {
 		} while (shouldContinue);
 
 		return bestSolution;
-	}
-
-	private int getRandomIndex() {
-		final Random random = new Random();
-
-		return random.nextInt(this.universe.size());
 	}
 
 	public static void main(String[] args) {
