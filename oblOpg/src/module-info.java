@@ -1,9 +1,0 @@
-/**
- * 
- */
-/**
- * @author Hansen
- *
- */
-module oblOpg {
-}

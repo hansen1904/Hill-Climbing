@@ -2,54 +2,81 @@ package HillClimb;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class SimpleHillClimbing {
 
 	private final List<Double> universe;
 	private final Problem p;
-	private ArrayList<Double> bestSolution;
 
 	public SimpleHillClimbing(final List<Double> universe, Problem p) {
 		this.universe = universe;
 		this.p = p;
 	}
 
-	public double findOptima() {
+	public ArrayList<Double> findOptima(int iterations, double stepSize) {
 		boolean shouldContinue;
 		
 		ArrayList<Double> localBestSolution = new ArrayList<>();
+		ArrayList<Double> globalBestSolution = new ArrayList<>();
+		
 		for(int dim = 0; dim < p.getDimensions(); dim++) {
-			localBestSolution.add(p.getMinValues().get(dim) + Math.random() * (p.getMaxValues().get(dim) - localBestSolution.getMinVal-ues().get(dim)));
+			localBestSolution.add(p.getMinValues().get(dim) + Math.random() * (p.getMaxValues().get(dim) - p.getMinValues().get(dim)));
+		}
+		
+		for(int dim = 0; dim < p.getDimensions(); dim++) {
+			globalBestSolution.add(p.getMinValues().get(dim) + Math.random() * (p.getMaxValues().get(dim) - p.getMinValues().get(dim)));
 		}
 
 		
 		do {
-			// Select a random neighbour
-			double newSolution = this.universe.get(this.getRandomIndex());
-			// If a new solution's value is greater than current, best solution
-			if (bestSolution < newSolution) {
-				// Change the best solution
-				bestSolution = newSolution;
-				// And continue searching
+			for(int i = 0; i < iterations; i++) {
+				
+				//Getting a neighbour
+				ArrayList<Double> param = new ArrayList<>();
+				for(int dim = 0; dim < p.getDimensions(); dim++) {
+					
+					param.add(p.getMinValues().get(dim) + Math.random() * stepSize + (p.getMaxValues().get(dim) - p.getMinValues().get(dim)));
+					if(param.get(dim) < p.getMinValues().get(dim)) {
+						
+					}
+				}			
+				
+			}
+			
+			//Checking if local is better than Global.
+			if (p.Eval(localBestSolution) > p.Eval(globalBestSolution)) {
+
+				globalBestSolution = localBestSolution;
 				shouldContinue = true;
+				
 			} else {
-				// Otherwise stop
 				shouldContinue = false;
 			}
+			
 		} while (shouldContinue);
-
-		return bestSolution;
+		
+		//Returning the best solution.
+		return globalBestSolution;
 	}
 
 	public static void main(String[] args) {
 
 		ArrayList<Double> list = new ArrayList<>();
+		P1 p = new P1();
 
-		// TODO add to list
+		list.add(2.0);
+		list.add(0.04);
+		list.add(8.4);
+		list.add(9.3);
+		list.add(4.1);
+		list.add(0.00005);
+		list.add(77.0);
+		list.add(11.0);
+		list.add(103.0);
+		list.add(99.0);
 
-		SimpleHillClimbing test = new SimpleHillClimbing(list);
-		System.out.println(test.findOptima());
+		SimpleHillClimbing test = new SimpleHillClimbing(list, p);
+		System.out.println(test.findOptima(5, 0.5));
 	}
 
 }
