@@ -13,7 +13,7 @@ public class SimpleHillClimbing {
 		this.p = p;
 	}
 
-	public ArrayList<Double> findOptima(int iterations, double stepSize) {
+	public ArrayList<Double> findOptima(int iterations, double stepSize, int neighbours) {
 		boolean shouldContinue = true;
 		
 		ArrayList<Double> localBestSolution = new ArrayList<>();
@@ -26,9 +26,43 @@ public class SimpleHillClimbing {
 		for(int dim = 0; dim < p.getDimensions(); dim++) {
 			globalBestSolution.add(p.getMinValues().get(dim) + Math.random() * (p.getMaxValues().get(dim) - p.getMinValues().get(dim)));
 		}
-
+			
+		System.out.println("Start Local: " + p.Eval(localBestSolution));
+		System.out.println("Start Global: " + p.Eval(globalBestSolution));
+		
 		int count = 1;
 		do {
+			
+			//Getting a neighbour
+			ArrayList<Double> bestNeighbours = new ArrayList<>();
+			for(int n = 0; n < neighbours; n++) {
+				
+				ArrayList<Double> ArrNeighbours = new ArrayList<>();
+				
+				for(int dim = 0; dim < p.getDimensions(); dim++) {
+					
+					ArrNeighbours.add(localBestSolution.get(dim) + Math.random() * stepSize);
+					if(ArrNeighbours.get(dim) < p.getMinValues().get(dim)) {
+						ArrNeighbours.set(dim, p.getMinValues().get(dim));
+					}
+					if(ArrNeighbours.get(dim) > p.getMaxValues().get(dim)) {
+						ArrNeighbours.set(dim, p.getMaxValues().get(dim));
+					}
+				}
+				System.out.println("Neighbour: " + p.Eval(ArrNeighbours) + ", " + ArrNeighbours);
+				
+				if(n == 0) {
+					bestNeighbours = ArrNeighbours;
+				}
+				
+				if(p.Eval(ArrNeighbours) > p.Eval(bestNeighbours)) {
+					bestNeighbours = ArrNeighbours;
+				}
+			}
+						
+			if (p.Eval(localBestSolution) < p.Eval(bestNeighbours)) {
+				localBestSolution = bestNeighbours;
+			}
 			
 			if(count < iterations) {
 				count++;
@@ -36,34 +70,16 @@ public class SimpleHillClimbing {
 				shouldContinue = false;
 			}
 			
-			//Getting a neighbour
-			ArrayList<Double> param = new ArrayList<>();
-			for(int dim = 0; dim < p.getDimensions(); dim++) {
-				
-				param.add(localBestSolution.get(dim) + Math.random() * stepSize);
-				if(param.get(dim) < p.getMinValues().get(dim)) {
-					param.set(dim, p.getMinValues().get(dim));
-				}
-				if(param.get(dim) > p.getMaxValues().get(dim)) {
-					param.set(dim, p.getMaxValues().get(dim));
-				}
-			}			
-
-			if (p.Eval(localBestSolution) < p.Eval(param)) {
-				localBestSolution = param;
-			}
-			
 		} while (shouldContinue);
+	
+		
+		System.out.println("Eval Local: " + p.Eval(localBestSolution));
+		System.out.println("Eval Global: " + p.Eval(globalBestSolution));
 		
 		//Checking if local is better than Global.
 		if (p.Eval(localBestSolution) > p.Eval(globalBestSolution)) {
 			globalBestSolution = localBestSolution;
 		}
-		
-		System.out.println("Local: " + localBestSolution);
-		System.out.println("Eval Local: " + p.Eval(localBestSolution));
-		System.out.println("Global: " + globalBestSolution);
-		System.out.println("Eval Global: " + p.Eval(globalBestSolution));
 		
 		//Returning the best solution.
 		return globalBestSolution;
@@ -90,7 +106,7 @@ public class SimpleHillClimbing {
 		list.add(5.0);
 
 		SimpleHillClimbing test = new SimpleHillClimbing(list, p);
-		System.out.println(test.findOptima(50, 0.5));
+		test.findOptima(10, 0.5, 5);
 	}
 
 }
