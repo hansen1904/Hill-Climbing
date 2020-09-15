@@ -16,19 +16,19 @@ public class SimpleHillClimbing {
 	public ArrayList<Double> findOptima(int iterations, double stepSize, int neighbours) {
 		boolean shouldContinue = true;
 		
+		//Init Local and Global
 		ArrayList<Double> localBestSolution = new ArrayList<>();
 		ArrayList<Double> globalBestSolution = new ArrayList<>();
 		
+		//Picking Random for Local
 		for(int dim = 0; dim < p.getDimensions(); dim++) {
 			localBestSolution.add(p.getMinValues().get(dim) + Math.random() * (p.getMaxValues().get(dim) - p.getMinValues().get(dim)));
 		}
 		
+		//Picking Random for Global
 		for(int dim = 0; dim < p.getDimensions(); dim++) {
 			globalBestSolution.add(p.getMinValues().get(dim) + Math.random() * (p.getMaxValues().get(dim) - p.getMinValues().get(dim)));
 		}
-			
-		System.out.println("Start Local: " + p.Eval(localBestSolution));
-		System.out.println("Start Global: " + p.Eval(globalBestSolution));
 		
 		int count = 1;
 		do {
@@ -49,21 +49,24 @@ public class SimpleHillClimbing {
 						ArrNeighbours.set(dim, p.getMaxValues().get(dim));
 					}
 				}
-				System.out.println("Neighbour: " + p.Eval(ArrNeighbours) + ", " + ArrNeighbours);
 				
+				//If first neighbour set best to that.
 				if(n == 0) {
 					bestNeighbours = ArrNeighbours;
 				}
 				
+				//Checking if the neighbour is better than bestNeighbour 
 				if(p.Eval(ArrNeighbours) > p.Eval(bestNeighbours)) {
 					bestNeighbours = ArrNeighbours;
 				}
 			}
-						
+			
+			//After looping all Neighbour, we compare localBest to the Best neighbour we got.
 			if (p.Eval(localBestSolution) < p.Eval(bestNeighbours)) {
 				localBestSolution = bestNeighbours;
 			}
 			
+			//Checking if we have run though our iterations.
 			if(count < iterations) {
 				count++;
 			} else {
@@ -73,10 +76,7 @@ public class SimpleHillClimbing {
 		} while (shouldContinue);
 	
 		
-		System.out.println("Eval Local: " + p.Eval(localBestSolution));
-		System.out.println("Eval Global: " + p.Eval(globalBestSolution));
-		
-		//Checking if local is better than Global.
+		//Checking if Local is better than Global.
 		if (p.Eval(localBestSolution) > p.Eval(globalBestSolution)) {
 			globalBestSolution = localBestSolution;
 		}
@@ -87,9 +87,14 @@ public class SimpleHillClimbing {
 
 	public static void main(String[] args) {
 
-		ArrayList<Double> list = new ArrayList<>();
+		//Difference types of problems.
 		P1 p = new P1();
+//		P2 p = new P2();
+//		RevAckley p = new RevAckley();
 
+		//Adding Data
+		ArrayList<Double> list = new ArrayList<>();
+		
 		list.add(1.0);
 		list.add(1.0);
 		
@@ -104,9 +109,10 @@ public class SimpleHillClimbing {
 		
 		list.add(5.0);
 		list.add(5.0);
-
+		
+		//Running our Hill Climbing Program.
 		SimpleHillClimbing test = new SimpleHillClimbing(list, p);
-		test.findOptima(10, 0.5, 5);
+		System.out.println(p.Eval(test.findOptima(10, 0.5, 10)));
 	}
 
 }
