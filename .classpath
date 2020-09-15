@@ -6,6 +6,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry excluding="oblOpg/src/" kind="src" path=""/>
-	<classpathentry kind="src" path="oblOpg/src"/>
 	<classpathentry kind="output" path="oblOpg/bin"/>
 </classpath>
